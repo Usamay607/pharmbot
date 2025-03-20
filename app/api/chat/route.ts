@@ -1,5 +1,5 @@
 import 'server-only'
-import { OpenAIStream, StreamingTextResponse } from 'ai'
+import { OpenAIStream, StreamingTextResponse, Message } from 'ai'
 import { Configuration, OpenAIApi } from 'openai-edge'
 import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs'
 import { cookies } from 'next/headers'
@@ -48,7 +48,7 @@ export async function POST(req: Request) {
 
   // Get the last user message for context
   const lastUserMessage = messages
-    .filter(message => message.role === 'user')
+    .filter((message: Message) => message.role === 'user')
     .pop()
 
   // Get relevant SOP document content as context

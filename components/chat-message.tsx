@@ -36,7 +36,7 @@ export function ChatMessage({
     >
       <div
         className={cn(
-          'flex h-8 w-8 shrink-0 select-none items-center justify-center rounded-md border shadow',
+          'flex size-8 shrink-0 select-none items-center justify-center rounded-md border shadow',
           message.role === 'user'
             ? 'bg-background'
             : 'bg-primary text-primary-foreground'
@@ -102,10 +102,10 @@ export function ChatMessage({
                   <CardContent className="p-3">
                     <div className="text-sm">
                       <span className="font-medium">{index + 1}. {doc.title}</span> 
-                      <span className="text-xs ml-2 text-muted-foreground">
+                      <span className="ml-2 text-xs text-muted-foreground">
                         (Category: {doc.category})
                       </span>
-                      <p className="mt-1 text-xs text-muted-foreground line-clamp-2">
+                      <p className="mt-1 line-clamp-2 text-xs text-muted-foreground">
                         {doc.content.length > 150 
                           ? `${doc.content.substring(0, 150)}...` 
                           : doc.content}

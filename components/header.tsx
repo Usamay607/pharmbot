@@ -39,18 +39,18 @@ export async function Header() {
           </Sidebar>
         ) : (
           <Link href="/" target="_blank" rel="nofollow">
-            <IconNextChat className="mr-2 h-6 w-6 dark:hidden" inverted />
-            <IconNextChat className="mr-2 hidden h-6 w-6 dark:block" />
+            <IconNextChat className="mr-2 size-6 dark:hidden" inverted />
+            <IconNextChat className="mr-2 hidden size-6 dark:block" />
           </Link>
         )}
         <div className="flex items-center">
-          <IconSeparator className="h-6 w-6 text-muted-foreground/50" />
+          <IconSeparator className="size-6 text-muted-foreground/50" />
           {session?.user ? (
             <>
               <UserMenu user={session.user} />
-              <IconSeparator className="h-6 w-6 text-muted-foreground/50" />
+              <IconSeparator className="size-6 text-muted-foreground/50" />
               <Link href="/sop" className="flex items-center px-4 py-2 text-sm font-medium">
-                <IconFiles className="mr-2 h-5 w-5" />
+                <IconFiles className="mr-2 size-5" />
                 SOP Documents
               </Link>
             </>

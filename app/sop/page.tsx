@@ -6,8 +6,8 @@ import { SopDashboard } from '@/components/sop/dashboard'
 export default function SopPage() {
   return (
     <div className="flex flex-col items-center justify-between p-4 md:p-8">
-      <div className="w-full max-w-6xl mx-auto">
-        <h1 className="text-2xl font-bold mb-6">SOP Document Management</h1>
+      <div className="mx-auto w-full max-w-6xl">
+        <h1 className="mb-6 text-2xl font-bold">SOP Document Management</h1>
         
         <div className="mb-8">
           <SopDashboard />
@@ -24,7 +24,7 @@ export default function SopPage() {
           </TabsContent>
           
           <TabsContent value="upload" className="mt-4">
-            <div className="w-full flex justify-center">
+            <div className="flex w-full justify-center">
               <UploadSopForm />
             </div>
           </TabsContent>
