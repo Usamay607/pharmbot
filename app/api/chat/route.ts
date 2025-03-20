@@ -53,7 +53,13 @@ export async function POST(req: Request) {
 
   // Get relevant SOP document content as context
   let sopContext = ''
-  let sourceDocuments = []
+  let sourceDocuments: Array<{
+    id: string;
+    title: string;
+    category: string;
+    content: string;
+    similarity: number;
+  }> = []
 
   if (lastUserMessage) {
     try {
