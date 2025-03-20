@@ -10,6 +10,15 @@ import { nanoid } from '@/lib/utils'
 
 export const runtime = 'edge'
 
+// Create a type for the documents returned by match_documents
+interface MatchDocument {
+  id: string
+  title: string
+  category: string
+  content: string
+  similarity: number
+}
+
 const configuration = new Configuration({
   apiKey: process.env.OPENAI_API_KEY
 })
@@ -22,7 +31,7 @@ async function generateEmbedding(text: string) {
     model: 'text-embedding-ada-002',
     input: text
   })
-  
+
   const result = await response.json()
   return result.data[0].embedding
 }
@@ -53,35 +62,34 @@ export async function POST(req: Request) {
 
   // Get relevant SOP document content as context
   let sopContext = ''
-  let sourceDocuments: Array<{
-    id: string;
-    title: string;
-    category: string;
-    content: string;
-    similarity: number;
-  }> = []
+  let sourceDocuments: Array<MatchDocument> = []
 
   if (lastUserMessage) {
     try {
       // Generate embedding for the query
       const embedding = await generateEmbedding(lastUserMessage.content)
-      
+
       // Perform similarity search
-      const { data: documents } = await supabase.rpc('match_documents', {
+      const { data: documents } = (await supabase.rpc('match_documents', {
         query_embedding: embedding,
         match_threshold: 0.5,
         match_count: 3
-      })
-      
+      })) as { data: Array<MatchDocument> | null }
+
       if (documents && documents.length > 0) {
         sourceDocuments = documents
-        
+
         // Build context from relevant documents
-        sopContext = `Here is information from relevant SOP documents:\n\n${
-          documents.map((doc, index) => 
-            `Document ${index + 1} [${doc.category} - ${doc.title}]:\n${doc.content.substring(0, 1000)}${doc.content.length > 1000 ? '...' : ''}`
-          ).join('\n\n')
-        }\n\n`
+        sopContext = `Here is information from relevant SOP documents:\n\n${documents
+          .map(
+            (doc, index) =>
+              `Document ${index + 1} [${doc.category} - ${
+                doc.title
+              }]:\n${doc.content.substring(0, 1000)}${
+                doc.content.length > 1000 ? '...' : ''
+              }`
+          )
+          .join('\n\n')}\n\n`
       }
     } catch (error) {
       console.error('Error fetching SOP context:', error)
@@ -90,7 +98,7 @@ export async function POST(req: Request) {
 
   // Prepare messages with SOP context
   const promptMessages = [...messages]
-  
+
   if (sopContext) {
     // Insert SOP context before the last user message
     promptMessages.splice(promptMessages.length - 1, 0, {
@@ -123,7 +131,8 @@ export async function POST(req: Request) {
           {
             content: completion,
             role: 'assistant',
-            sourceDocuments: sourceDocuments.length > 0 ? sourceDocuments : undefined
+            sourceDocuments:
+              sourceDocuments.length > 0 ? sourceDocuments : undefined
           }
         ]
       }
